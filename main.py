@@ -1,26 +1,16 @@
+import time
 import requests
+import json
 
-URL = 'https://playground.learnqa.ru/ajax/api/compare_query_type'
-method = {"method":"GET"}
-response1 = requests.get(URL)
-print(f'1. Без параметра method: {response1.text}')
-
-response2 = requests.head(URL, data='HEAD')
-print(f'2. Не из списка HEAD: {response2.text}')
-
-response3 = requests.post(URL, data={"method":"POST"})
-print(f'3. с правильным значением method: {response3.text}')
-
-print('4.')
-methods = ['POST', 'GET', 'PUT', 'DELETE', 'HEAD']
-type = [[requests.get, 'requests.get'], [requests.post, 'requests.post'], [requests.put, 'requests.put'],
-        [requests.delete, 'requests.delete'], [requests.head, 'requests.head']]
-
-for i in type:
-    for j in methods:
-        if i[1] == 'requests.get':
-            response = i[0](URL, params={"method":j})
-            print(f'{i[1]}({URL}, parasms=["method"="{j}"]):  {response.text}')
-        else:
-            response = i[0](URL, data={"method": j})
-            print(f'{i[1]}({URL}, data=["method"="{j}"]):  {response.text}')
+URL = 'https://playground.learnqa.ru/ajax/api/longtime_job'
+response = requests.get(URL)
+print(f'Создаем задачу: {response.text}')
+obj = json.loads(response.text)
+token = obj['token']
+seconds = obj['seconds']
+response1 = requests.get(URL, params={'token':token})
+print(f'Делаем запрос с token ДО того, как задача готова: {response1.text}')
+print(f'Ждем {seconds} сек.')
+time.sleep(seconds)
+response2 = requests.get(URL, params={'token':token})
+print(f'Делаем запрос с token ПОСЛЕ того, как задача готова: {response2.text}')
