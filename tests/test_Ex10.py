@@ -5,6 +5,6 @@ class TestPhrase:
     def testPhrase(self):
         url = 'https://playground.learnqa.ru/api/homework_cookie'
         response = requests.get(url)
-        print(response.cookies)
+        print(response.headers)
         assert response.status_code == 200, "Wrong response code"
 
